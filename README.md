@@ -1,1 +1,5 @@
 # LLM-non-determinism-evaluator
+Este é o projeto da disciplina de tópicos avançados em engenharia de software. Nele iremos iterar sobre o trabalho [An Empirical Study of the Non-Determinism of ChatGPT in Code Generation](https://dl.acm.org/doi/full/10.1145/36970100). A equipe pretende aplicar as seguintes análises:
+- Aplicar e avaliar o não determinismo em diferentes modelos de linguagem;
+- Implementar loops para garantir corretude do código gerado.
+- Analisar a intersecção entre corretude semântica e sintática do código gerado.
