@@ -3,3 +3,10 @@ Este é o projeto da disciplina de tópicos avançados em engenharia de software
 - Aplicar e avaliar o não determinismo em diferentes modelos de linguagem;
 - Implementar loops para garantir corretude do código gerado.
 - Analisar a intersecção entre corretude semântica e sintática do código gerado.
+
+## Preparing the model
+
+```sh
+curl -fsSL https://ollama.com/install.sh | sh
+ollama pull llama3.2
+```
