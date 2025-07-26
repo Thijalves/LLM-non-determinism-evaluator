@@ -14,7 +14,7 @@ def llama_mock(func):
     else:
         return func
 
-dataset = "human_eval.json"
+dataset = "./datasets/human_eval.json"
 for i in range(164):
     task_id = f"HumanEval_{i}"
 

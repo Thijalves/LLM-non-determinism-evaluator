@@ -1,7 +1,6 @@
 import os
 import re
 import json
-import importlib.util
 
 def get_field_from_json(json_file_path: str, task_id: str, field: str) -> str:
     """

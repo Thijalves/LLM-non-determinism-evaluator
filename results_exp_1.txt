@@ -1,0 +1,59 @@
+```python
+from typing import List
+
+
+def has_close_elements(numbers: List[float], threshold: float) -> bool:
+    """ Check if in given list of numbers, are any two numbers closer to each other than
+    given threshold.
+
+    Args:
+        numbers (List[float]): A list of floating point numbers.
+        threshold (float): The minimum difference required between two numbers.
+
+    Returns:
+        bool: True if any two numbers in the list have a difference less than the threshold, False otherwise.
+    """
+    # Sort the list of numbers
+    sorted_numbers = sorted(numbers)
+    
+    # Initialize a variable to store the result
+    has_close_pair = False
+    
+    # Iterate over the sorted list
+    for i in range(1, len(sorted_numbers)):
+        # Calculate the difference between the current number and the previous one
+        diff = abs(sorted_numbers[i] - sorted_numbers[i-1])
+        
+        # If the difference is less than the threshold, set has_close_pair to True
+        if diff < threshold:
+            has_close_pair = True
+            
+            # Break out of the loop since we've found a pair with a difference less than the threshold
+            break
+    
+    return has_close_pair
+
+
+# Example usage:
+numbers = [1.0, 2.8, 3.0, 4.0, 5.0, 2.0]
+threshold = 0.3
+
+if has_close_elements(numbers, threshold):
+    print("There are numbers in the list with a difference less than the threshold.")
+else:
+    print("No numbers in the list have a difference less than the threshold.")
+
+# Check another example
+numbers = [1.0, 2.0, 3.0]
+threshold = 0.5
+
+if has_close_elements(numbers, threshold):
+    print("There are numbers in the list with a difference less than the threshold.")
+else:
+    print("No numbers in the list have a difference less than the threshold.")
+
+```
+
+This code sorts the input list of numbers and then checks each pair of adjacent numbers to see if their absolute difference is less than the given threshold. If it finds such a pair, it returns True; otherwise, it returns False.
+
+In the provided examples, we first create a list of numbers and set a threshold, then use the has_close_elements function to check whether there are any two numbers in the list with a difference less than the threshold.
