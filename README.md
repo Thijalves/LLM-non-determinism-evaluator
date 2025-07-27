@@ -10,3 +10,7 @@ Este é o projeto da disciplina de tópicos avançados em engenharia de software
 curl -fsSL https://ollama.com/install.sh | sh
 ollama pull llama3.2
 ```
+
+## Experimentos 
+
+1. Coletar 5 soluções por task geradas pelo llama3.2 e comparar sintaxe (conteudo da string), semântica (resultado do teste) e estrutura (AST)
