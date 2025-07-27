@@ -131,7 +131,7 @@ def process_task(json_file_path: str, task_id: str, destination_path: str):
     # save test case into a file
     content = get_field_from_json(json_file_path, task_id, 'test')
     if content:
-        filename = "test_case.py"
+        filename = "test.py"
         save_to_file(content, os.path.join(destination_path, filename))
     else:
         print(f"No test case found for task_id '{task_id}'")
