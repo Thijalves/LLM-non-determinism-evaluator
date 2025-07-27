@@ -3,11 +3,15 @@ import re
 from ollama import chat
 from ollama import ChatResponse
 
-def generate_solution(task: str, model: str, destination: str):
+def generate_code(task: str, model: str):
     """Generate and save solution to a file"""
     response = get_model_response(task, model)
-    code = extract_code(response)
-
+    return extract_code(response)
+    
+def save_solution(code: str, entry_point: str, destination: str):
+    # rename method in code
+    code = code.replace(entry_point, "generated_solution")
+    
     filename = './generated_solution.py'
     save_to_file(code, os.path.join(destination, filename))
 

@@ -76,7 +76,7 @@ def save_to_file(content: str, filename: str):
     except Exception as e:
         print(f"Error writing file {filename}: {e}")
 
-def get_entrypoint(json_file_path: str, task_id: str) -> str:
+def get_entry_point(json_file_path: str, task_id: str) -> str:
     """Retrieves the entrypoint function name from a JSON file for a specific task_id.
 
     Args:
