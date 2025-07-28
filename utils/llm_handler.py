@@ -5,8 +5,12 @@ from ollama import ChatResponse
 
 def generate_code(task: str, model: str):
     """Generate and save solution to a file"""
-    response = get_model_response(task, model)
-    return extract_code(response)
+
+    code = ""
+    while(code == ""):
+        response = get_model_response(task, model)
+        code = extract_code(response)
+    return code
     
 def save_solution(code: str, entry_point: str, destination: str):
     # rename method in code
@@ -24,7 +28,7 @@ def get_model_response(task:str, model: str) -> str:
     response: ChatResponse = chat(model=model, messages=[
         {
             'role': 'user',
-            'content': 'Generate Python3 code (Markdown):\n' + task,
+            'content': 'Generate Python3 code, no examples (Markdown):\n' + task,
         },
     ])
     return response['message']['content']
