@@ -28,7 +28,16 @@ def get_model_response(task:str, model: str) -> str:
     response: ChatResponse = chat(model=model, messages=[
         {
             'role': 'user',
-            'content': 'Generate Python3 code, no examples (Markdown):\n' + task,
+            'content': '''Generate Python3 code with all necessary imports. The code should be complete and executable.
+
+            Requirements:
+            - Include all necessary imports (typing, etc.)
+            - The function should be standalone and executable
+            - No examples or print statements
+            - Only the function implementation
+
+            Task:
+            ''' + task,
         },
     ])
     return response['message']['content']

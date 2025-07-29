@@ -1,0 +1,646 @@
+{
+  "task_analyses": [
+    {
+      "semantic_analysis": {
+        "success_rate": 0.8,
+        "passed_count": 4,
+        "failed_count": 1,
+        "total_count": 5,
+        "semantic_consistency": false,
+        "all_passed": false,
+        "all_failed": false
+      },
+      "syntax_comparisons": [
+        {
+          "pair": [
+            0,
+            1
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.5973451327433629,
+            "token_similarity": 0.6521739130434783,
+            "length_diff": 200,
+            "hash1": "edf70daf4ac507d9f3fe94237acff043",
+            "hash2": "fc13c0b52a0da639c096231aefea0e9d"
+          },
+          "ast": {
+            "structure_similarity": 0.95,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            0,
+            2
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.5465517241379311,
+            "token_similarity": 0.8888888888888888,
+            "length_diff": 448,
+            "hash1": "edf70daf4ac507d9f3fe94237acff043",
+            "hash2": "63aeb4a05c1f9781c747a422145e06c5"
+          },
+          "ast": {
+            "structure_similarity": 0.9625,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            0,
+            3
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.639067055393586,
+            "token_similarity": 0.8292682926829268,
+            "length_diff": 107,
+            "hash1": "edf70daf4ac507d9f3fe94237acff043",
+            "hash2": "8323f524c61a0d39d95caeb2554794f6"
+          },
+          "ast": {
+            "structure_similarity": 1.0,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            0,
+            4
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.5597667638483965,
+            "token_similarity": 0.7727272727272727,
+            "length_diff": 236,
+            "hash1": "edf70daf4ac507d9f3fe94237acff043",
+            "hash2": "fb2aedb94bed9da79d756ca0f0a08926"
+          },
+          "ast": {
+            "structure_similarity": 0.9625,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            1,
+            2
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.3764705882352941,
+            "token_similarity": 0.5882352941176471,
+            "length_diff": 648,
+            "hash1": "fc13c0b52a0da639c096231aefea0e9d",
+            "hash2": "63aeb4a05c1f9781c747a422145e06c5"
+          },
+          "ast": {
+            "structure_similarity": 0.9125,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            1,
+            3
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.5023498694516971,
+            "token_similarity": 0.723404255319149,
+            "length_diff": 93,
+            "hash1": "fc13c0b52a0da639c096231aefea0e9d",
+            "hash2": "8323f524c61a0d39d95caeb2554794f6"
+          },
+          "ast": {
+            "structure_similarity": 0.95,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            1,
+            4
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.4821882951653944,
+            "token_similarity": 0.68,
+            "length_diff": 436,
+            "hash1": "fc13c0b52a0da639c096231aefea0e9d",
+            "hash2": "fb2aedb94bed9da79d756ca0f0a08926"
+          },
+          "ast": {
+            "structure_similarity": 0.9125,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            2,
+            3
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.47987371744277824,
+            "token_similarity": 0.7391304347826086,
+            "length_diff": 555,
+            "hash1": "63aeb4a05c1f9781c747a422145e06c5",
+            "hash2": "8323f524c61a0d39d95caeb2554794f6"
+          },
+          "ast": {
+            "structure_similarity": 0.9625,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            2,
+            4
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.683982683982684,
+            "token_similarity": 0.8163265306122449,
+            "length_diff": 212,
+            "hash1": "63aeb4a05c1f9781c747a422145e06c5",
+            "hash2": "fb2aedb94bed9da79d756ca0f0a08926"
+          },
+          "ast": {
+            "structure_similarity": 1.0,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        },
+        {
+          "pair": [
+            3,
+            4
+          ],
+          "syntax": {
+            "exact_match": false,
+            "similarity_ratio": 0.45841784989858014,
+            "token_similarity": 0.8444444444444444,
+            "length_diff": 343,
+            "hash1": "8323f524c61a0d39d95caeb2554794f6",
+            "hash2": "fb2aedb94bed9da79d756ca0f0a08926"
+          },
+          "ast": {
+            "structure_similarity": 0.9625,
+            "structure1": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "structure2": {
+              "function_defs": [
+                {
+                  "name": "has_close_elements",
+                  "args": 2,
+                  "decorators": 0
+                }
+              ],
+              "classes": [],
+              "imports": [
+                "typing.List"
+              ],
+              "control_flow": [
+                "If",
+                "For",
+                "If"
+              ],
+              "expressions": [
+                "Constant",
+                "Call"
+              ]
+            },
+            "function_count_diff": 0,
+            "import_count_diff": 0
+          }
+        }
+      ],
+      "summary": {
+        "total_solutions": 5,
+        "exact_matches": 0,
+        "avg_syntax_similarity": 0.5326013680299704,
+        "avg_ast_similarity": 0.9575000000000001,
+        "non_determinism_score": 0.4673986319700296
+      },
+      "task_id": "HumanEval_0"
+    }
+  ],
+  "aggregate_stats": {
+    "total_tasks": 1,
+    "avg_non_determinism_score": 0.4673986319700296,
+    "avg_success_rate": 0.8,
+    "semantically_consistent_tasks": 0,
+    "semantically_inconsistent_tasks": 1
+  }
+}
