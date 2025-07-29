@@ -114,9 +114,9 @@ def main():
     report = generate_analysis_report(results)
     print_analysis_report(report)
     
-    os.makedirs("reports/analysis", exist_ok=True)
-    timestamp = datetime.now().strftime("%y%m%d-%H%M%S")
-    report_filename = f"reports/analysis/analysis_report_{timestamp}.json"
+    os.makedirs("reports/", exist_ok=True)
+    base_filename = os.path.basename(filename)
+    report_filename = f"reports/analysis_{base_filename}"
     
     with open(report_filename, 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
