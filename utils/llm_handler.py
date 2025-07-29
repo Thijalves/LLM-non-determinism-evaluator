@@ -3,12 +3,12 @@ import re
 from ollama import chat
 from ollama import ChatResponse
 
-def generate_code(task: str, model: str):
+def generate_code(task: str, model: str, feedback=None):
     """Generate and save solution to a file"""
 
     code = ""
     while(code == ""):
-        response = get_model_response(task, model)
+        response = get_model_response(task, model, feedback=feedback)
         code = extract_code(response)
     return code
     
@@ -24,22 +24,20 @@ def extract_code(response: str) -> str:
     match = re.search(r"```python(.*?)```", response, re.DOTALL)
     return match.group(1).strip() if match else ""
 
-def get_model_response(task:str, model: str) -> str:
+def get_model_response(task:str, model: str, feedback=None) -> str:
+
+    message = 'Generate Python3 code, no examples (Markdown):\n' + task
+
+    if (feedback):
+        message += "\nPrevious attempt failed with the following feedback:\n" + feedback        
+
     response: ChatResponse = chat(model=model, messages=[
         {
             'role': 'user',
-            'content': '''Generate Python3 code with all necessary imports. The code should be complete and executable.
-
-            Requirements:
-            - Include all necessary imports (typing, etc.)
-            - The function should be standalone and executable
-            - No examples or print statements
-            - Only the function implementation
-
-            Task:
-            ''' + task,
+            'content': message,
         },
     ])
+
     return response['message']['content']
 
 def save_to_file(content: str, filename: str):
