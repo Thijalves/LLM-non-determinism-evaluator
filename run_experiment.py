@@ -74,12 +74,12 @@ def run_experiment(experiment_num, tasks=10):
     
     # Modifica temporariamente o número de tasks se necessário
     if experiment_num == 3 and tasks != 10:
-        with open(script_name, 'r') as f:
+        with open(script_name, 'r', encoding='utf-8') as f:
             content = f.read()
         
         modified_content = content.replace('total_tasks = 10', f'total_tasks = {tasks}')
         
-        with open(f"{script_name}.tmp", 'w') as f:
+        with open(f"{script_name}.tmp", 'w', encoding='utf-8') as f:
             f.write(modified_content)
         
         try:
