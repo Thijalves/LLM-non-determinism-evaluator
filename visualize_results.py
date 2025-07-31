@@ -27,8 +27,34 @@ def create_visualizations(results, output_prefix="visualization"):
     ast_similarities = []
     non_determinism_scores = []
     
-    for task_result in results:
-        if "analysis" in task_result:
+    # Verificar se é um arquivo de análise ou resultados brutos
+    if isinstance(results, dict) and "task_analyses" in results:
+        # É um arquivo de análise
+        task_analyses = results.get("task_analyses", [])
+        # Limitar para metade das tarefas
+        half_size = len(task_analyses)
+        task_analyses = task_analyses[:half_size]
+        
+        for task_result in task_analyses:
+            task_id = task_result["task_id"]
+            
+            # Extrair dados da análise
+            semantic = task_result["semantic_analysis"]
+            summary = task_result["summary"]
+            
+            task_ids.append(task_id)
+            success_rates.append(semantic["success_rate"])
+            syntax_similarities.append(summary["avg_syntax_similarity"])
+            ast_similarities.append(summary["avg_ast_similarity"])
+            non_determinism_scores.append(summary["non_determinism_score"])
+    else:
+        # É um arquivo de resultados brutos
+        results_list = [task for task in results if "analysis" in task]
+        # Limitar para metade das tarefas
+        half_size = len(results_list)
+        results_list = results_list[:half_size]
+        
+        for task_result in results_list:
             task_id = task_result["task_id"]
             analysis = task_result["analysis"]
             
@@ -42,51 +68,85 @@ def create_visualizations(results, output_prefix="visualization"):
         print("❌ Nenhum dado de análise encontrado!")
         return
     
+    print(f"📊 Gerando gráficos para {len(task_ids)} tarefas")
+    
+    # Converter nomes completos para siglas
+    task_siglas = []
+    for task_id in task_ids:
+        # Extrair número da tarefa (ex: "HumanEval_0" -> "H0")
+        if "HumanEval_" in task_id:
+            number = task_id.split("_")[-1]
+            task_siglas.append(f"H{number}")
+        else:
+            # Fallback para outros formatos
+            task_siglas.append(task_id)
+    
     # Configurar o estilo do matplotlib
     plt.style.use('default')
-    fig, axes = plt.subplots(2, 2, figsize=(15, 12))
-    fig.suptitle('Análise de Não-Determinismo em Geração de Código', fontsize=16, fontweight='bold')
     
-    # 1. Taxa de Sucesso
-    axes[0, 0].bar(range(len(task_ids)), success_rates, color='green', alpha=0.7)
-    axes[0, 0].set_title('Taxa de Sucesso por Tarefa')
-    axes[0, 0].set_ylabel('Taxa de Sucesso')
-    axes[0, 0].set_ylim(0, 1)
-    axes[0, 0].set_xticks(range(len(task_ids)))
-    axes[0, 0].set_xticklabels(task_ids, rotation=45)
-    
-    # 2. Similaridade Sintática
-    axes[0, 1].bar(range(len(task_ids)), syntax_similarities, color='blue', alpha=0.7)
-    axes[0, 1].set_title('Similaridade Sintática Média')
-    axes[0, 1].set_ylabel('Similaridade Sintática')
-    axes[0, 1].set_ylim(0, 1)
-    axes[0, 1].set_xticks(range(len(task_ids)))
-    axes[0, 1].set_xticklabels(task_ids, rotation=45)
-    
-    # 3. Similaridade AST
-    axes[1, 0].bar(range(len(task_ids)), ast_similarities, color='orange', alpha=0.7)
-    axes[1, 0].set_title('Similaridade Estrutural (AST)')
-    axes[1, 0].set_ylabel('Similaridade AST')
-    axes[1, 0].set_ylim(0, 1)
-    axes[1, 0].set_xticks(range(len(task_ids)))
-    axes[1, 0].set_xticklabels(task_ids, rotation=45)
-    
-    # 4. Score de Não-Determinismo
-    axes[1, 1].bar(range(len(task_ids)), non_determinism_scores, color='red', alpha=0.7)
-    axes[1, 1].set_title('Score de Não-Determinismo')
-    axes[1, 1].set_ylabel('Score de Não-Determinismo')
-    axes[1, 1].set_ylim(0, 1)
-    axes[1, 1].set_xticks(range(len(task_ids)))
-    axes[1, 1].set_xticklabels(task_ids, rotation=45)
-    
-    plt.tight_layout()
-    
-    # Salvar gráfico na pasta reports/visualizations
+    # Criar pasta para salvar os gráficos
     os.makedirs("reports/visualizations", exist_ok=True)
     timestamp = datetime.now().strftime("%y%m%d-%H%M%S")
-    filename = f"reports/visualizations/{output_prefix}_{timestamp}.png"
+    
+    # 1. Taxa de Sucesso
+    plt.figure(figsize=(12, 6))
+    plt.bar(range(len(task_siglas)), success_rates, color='green', alpha=0.7)
+    plt.title('Taxa de Sucesso por Tarefa (Metade do Dataset)', fontsize=14, fontweight='bold')
+    plt.ylabel('Taxa de Sucesso', fontsize=12)
+    plt.xlabel('Tarefas', fontsize=12)
+    plt.ylim(0, 1)
+    plt.xticks(range(len(task_siglas)), task_siglas, rotation=45)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    filename = f"reports/visualizations/{output_prefix}_success_rate_{timestamp}.png"
     plt.savefig(filename, dpi=300, bbox_inches='tight')
-    print(f"📊 Gráfico salvo em: {filename}")
+    plt.close()
+    print(f"📊 Gráfico de Taxa de Sucesso salvo em: {filename}")
+    
+    # 2. Similaridade Sintática
+    plt.figure(figsize=(12, 6))
+    plt.bar(range(len(task_siglas)), syntax_similarities, color='blue', alpha=0.7)
+    plt.title('Similaridade Sintática Média por Tarefa (Metade do Dataset)', fontsize=14, fontweight='bold')
+    plt.ylabel('Similaridade Sintática', fontsize=12)
+    plt.xlabel('Tarefas', fontsize=12)
+    plt.ylim(0, 1)
+    plt.xticks(range(len(task_siglas)), task_siglas, rotation=45)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    filename = f"reports/visualizations/{output_prefix}_syntax_similarity_{timestamp}.png"
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"📊 Gráfico de Similaridade Sintática salvo em: {filename}")
+    
+    # 3. Similaridade AST
+    plt.figure(figsize=(12, 6))
+    plt.bar(range(len(task_siglas)), ast_similarities, color='orange', alpha=0.7)
+    plt.title('Similaridade Estrutural (AST) por Tarefa (Metade do Dataset)', fontsize=14, fontweight='bold')
+    plt.ylabel('Similaridade AST', fontsize=12)
+    plt.xlabel('Tarefas', fontsize=12)
+    plt.ylim(0, 1)
+    plt.xticks(range(len(task_siglas)), task_siglas, rotation=45)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    filename = f"reports/visualizations/{output_prefix}_ast_similarity_{timestamp}.png"
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"📊 Gráfico de Similaridade AST salvo em: {filename}")
+    
+    # 4. Score de Não-Determinismo
+    plt.figure(figsize=(12, 6))
+    plt.bar(range(len(task_siglas)), non_determinism_scores, color='red', alpha=0.7)
+    plt.title('Score de Não-Determinismo por Tarefa (Metade do Dataset)', fontsize=14, fontweight='bold')
+    plt.ylabel('Score de Não-Determinismo', fontsize=12)
+    plt.xlabel('Tarefas', fontsize=12)
+    plt.ylim(0, 1)
+    plt.xticks(range(len(task_siglas)), task_siglas, rotation=45)
+    plt.grid(axis='y', alpha=0.3)
+    plt.tight_layout()
+    filename = f"reports/visualizations/{output_prefix}_non_determinism_{timestamp}.png"
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"📊 Gráfico de Não-Determinismo salvo em: {filename}")
     
     # Mostrar estatísticas resumidas
     print(f"\n📈 ESTATÍSTICAS RESUMIDAS:")
@@ -98,83 +158,111 @@ def create_visualizations(results, output_prefix="visualization"):
     # Análise de correlação
     if len(success_rates) > 1:  # Evitar erro com apenas um ponto
         print(f"\n🔍 ANÁLISE DE CORRELAÇÃO:")
-        corr_syntax_success = np.corrcoef(syntax_similarities, success_rates)[0, 1]
-        corr_ast_success = np.corrcoef(ast_similarities, success_rates)[0, 1]
-        corr_syntax_ast = np.corrcoef(syntax_similarities, ast_similarities)[0, 1]
+        corr_success_syntax = np.corrcoef(success_rates, syntax_similarities)[0, 1]
+        corr_success_ast = np.corrcoef(success_rates, ast_similarities)[0, 1]
+        corr_success_non_det = np.corrcoef(success_rates, non_determinism_scores)[0, 1]
         
-        print(f"   • Correlação sintaxe-sucesso: {corr_syntax_success:.3f}")
-        print(f"   • Correlação AST-sucesso: {corr_ast_success:.3f}")
-        print(f"   • Correlação sintaxe-AST: {corr_syntax_ast:.3f}")
+        print(f"   • Sucesso vs Sintática: {corr_success_syntax:.3f}")
+        print(f"   • Sucesso vs AST: {corr_success_ast:.3f}")
+        print(f"   • Sucesso vs Não-Determinismo: {corr_success_non_det:.3f}")
 
 def create_comparison_matrix(results, output_prefix="comparison_matrix"):
-    """Cria uma matriz de comparação entre soluções."""
+    """Cria matriz de comparação para cada tarefa."""
     
-    for task_result in results:
-        if "analysis" in task_result:
-            task_id = task_result["task_id"]
-            analysis = task_result["analysis"]
-            syntax_comparisons = analysis["syntax_comparisons"]
+    # Verificar se é um arquivo de análise ou resultados brutos
+    if isinstance(results, dict) and "task_analyses" in results:
+        # É um arquivo de análise
+        task_analyses = results.get("task_analyses", [])
+        # Limitar para metade das tarefas
+        half_size = len(task_analyses)
+        task_analyses = task_analyses[:half_size]
+    else:
+        # É um arquivo de resultados brutos
+        task_analyses = [task for task in results if "analysis" in task]
+        # Limitar para metade das tarefas
+        half_size = len(task_analyses)
+        task_analyses = task_analyses[:half_size]
+    
+    if not task_analyses:
+        print("❌ Nenhum dado de análise encontrado!")
+        return
+    
+    print(f"🔥 Gerando matrizes de comparação para {len(task_analyses)} tarefas (metade do total)")
+    
+    # Criar matriz de comparação para cada tarefa
+    for task_analysis in task_analyses[:5]:  # Limitar a 5 tarefas para não sobrecarregar
+        task_id = task_analysis["task_id"]
+        
+        # Verificar se há dados de comparação sintática
+        if "syntax_comparisons" not in task_analysis:
+            continue
             
-            if syntax_comparisons:
-                # Criar matriz de similaridade
-                n_solutions = len(task_result["responses"])
-                similarity_matrix = np.zeros((n_solutions, n_solutions))
-                
-                for comp in syntax_comparisons:
-                    pair = comp["pair"]
-                    similarity = comp["syntax"]["similarity_ratio"]
-                    similarity_matrix[pair[0], pair[1]] = similarity
-                    similarity_matrix[pair[1], pair[0]] = similarity
-                
-                # Diagonal = 1 (auto-similaridade)
-                np.fill_diagonal(similarity_matrix, 1.0)
-                
-                # Criar heatmap
-                plt.figure(figsize=(8, 6))
-                plt.imshow(similarity_matrix, cmap='RdYlBu_r', vmin=0, vmax=1)
-                plt.colorbar(label='Similaridade Sintática')
-                plt.title(f'Matriz de Similaridade - {task_id}')
-                plt.xlabel('Solução')
-                plt.ylabel('Solução')
-                plt.xticks(range(n_solutions))
-                plt.yticks(range(n_solutions))
-                
-                # Adicionar valores na matriz
-                for i in range(n_solutions):
-                    for j in range(n_solutions):
-                        plt.text(j, i, f'{similarity_matrix[i, j]:.2f}', 
-                                ha='center', va='center', fontsize=10)
-                
-                # Salvar matriz na pasta reports/visualizations
-                os.makedirs("reports/visualizations", exist_ok=True)
-                timestamp = datetime.now().strftime("%y%m%d-%H%M%S")
-                filename = f"reports/visualizations/{output_prefix}_{task_id}_{timestamp}.png"
-                plt.savefig(filename, dpi=300, bbox_inches='tight')
-                print(f"📊 Matriz de similaridade salva em: {filename}")
-                plt.close()
+        syntax_comparisons = task_analysis["syntax_comparisons"]
+        if not syntax_comparisons:
+            continue
+        
+        # Determinar número de soluções
+        max_solution = max(max(comp["pair"]) for comp in syntax_comparisons)
+        n_solutions = max_solution + 1
+        
+        # Criar matriz de similaridade
+        matrix = np.zeros((n_solutions, n_solutions))
+        for comp in syntax_comparisons:
+            pair = comp["pair"]
+            similarity = comp["syntax"]["similarity_ratio"]
+            matrix[pair[0], pair[1]] = similarity
+            matrix[pair[1], pair[0]] = similarity
+        
+        # Diagonal = 1 (auto-similaridade)
+        np.fill_diagonal(matrix, 1.0)
+        
+        # Criar heatmap
+        plt.figure(figsize=(8, 6))
+        plt.imshow(matrix, cmap='RdYlBu_r', vmin=0, vmax=1)
+        plt.colorbar(label='Similaridade Sintática')
+        plt.title(f'Matriz de Similaridade - {task_id} (Metade do Dataset)')
+        plt.xlabel('Solução')
+        plt.ylabel('Solução')
+        plt.xticks(range(n_solutions))
+        plt.yticks(range(n_solutions))
+        
+        # Adicionar valores na matriz
+        for i in range(n_solutions):
+            for j in range(n_solutions):
+                plt.text(j, i, f'{matrix[i, j]:.2f}', 
+                        ha='center', va='center', color='black', fontsize=8)
+        
+        # Salvar heatmap
+        os.makedirs("reports/visualizations", exist_ok=True)
+        timestamp = datetime.now().strftime("%y%m%d-%H%M%S")
+        filename = f"reports/visualizations/{output_prefix}_{task_id}_{timestamp}.png"
+        plt.savefig(filename, dpi=300, bbox_inches='tight')
+        print(f"🔥 Heatmap salvo em: {filename}")
+        plt.close()
 
 def main():
     """Função principal."""
     if len(sys.argv) < 2:
-        print("❌ Uso: python visualize_results.py <arquivo_resultados.json>")
-        print("   Exemplo: python visualize_results.py datasets/exp_1_250728-200014.json")
-        return
+        print("❌ Uso: python3 visualize_results.py <arquivo_json>")
+        print("   Exemplo: python3 visualize_results.py datasets/exp_1_llama3_164.json")
+        print("   Ou: python3 visualize_results.py reports/analysis_exp_1_llama3_164.json")
+        sys.exit(1)
     
     filename = sys.argv[1]
-    
     print(f"📂 Carregando resultados de: {filename}")
+    
     results = load_results(filename)
+    if results is None:
+        sys.exit(1)
     
-    if not results:
-        return
+    if isinstance(results, dict) and "task_analyses" in results:
+        print(f"✅ Carregados dados de análise com {len(results.get('task_analyses', []))} tarefas")
+    else:
+        print(f"✅ Carregados {len(results)} tarefas")
     
-    print(f"✅ Carregados {len(results)} tarefas")
-    
-    # Criar visualizações
     print("📊 Criando visualizações...")
     create_visualizations(results)
     create_comparison_matrix(results)
-    
     print("✅ Visualizações concluídas!")
 
 if __name__ == "__main__":
