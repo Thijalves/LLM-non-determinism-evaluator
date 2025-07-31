@@ -3,12 +3,12 @@ import re
 from ollama import chat
 from ollama import ChatResponse
 
-def generate_code(task: str, model: str, feedback=None):
+def generate_code(task: str, model: str, feedback=None, model_params=None):
     """Generate and save solution to a file"""
 
     code = ""
     while(code == ""):
-        response = get_model_response(task, model, feedback=feedback)
+        response = get_model_response(task, model, feedback=feedback, model_params=model_params)
         code = extract_code(response)
     return code
     
@@ -24,19 +24,35 @@ def extract_code(response: str) -> str:
     match = re.search(r"```python(.*?)```", response, re.DOTALL)
     return match.group(1).strip() if match else ""
 
-def get_model_response(task:str, model: str, feedback=None) -> str:
+def get_model_response(task:str, model: str, feedback=None, model_params=None) -> str:
 
     message = 'Generate Python3 code, no examples (Markdown):\n' + task
 
     if (feedback):
         message += "\nPrevious attempt failed with the following feedback:\n" + feedback        
 
-    response: ChatResponse = chat(model=model, messages=[
-        {
-            'role': 'user',
-            'content': message,
-        },
-    ])
+    # Default model parameters
+    options = {
+        'temperature': 0.7,
+        'top_p': 0.9,
+        'top_k': 40,
+        'num_predict': 512
+    }
+    
+    # Override with custom parameters if provided
+    if model_params:
+        options.update(model_params)
+
+    response: ChatResponse = chat(
+        model=model, 
+        messages=[
+            {
+                'role': 'user',
+                'content': message,
+            },
+        ],
+        options=options
+    )
 
     return response['message']['content']
 

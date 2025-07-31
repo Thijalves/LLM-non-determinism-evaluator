@@ -1,0 +1,231 @@
+import json
+import sys
+import traceback
+from datetime import datetime
+from utils.module_loader import load_module
+from utils.dataset_handler import process_task, get_task, get_entry_point
+from utils.llm_handler import generate_code, save_solution
+from utils.analysis import compare_solutions, generate_analysis_report
+import os
+import platform
+from contextlib import contextmanager
+
+# Windows compatibility for timeout
+if platform.system() == "Windows":
+    import threading
+    
+    class TimeoutException(Exception): pass
+    
+    @contextmanager
+    def time_limit(seconds):
+        def timeout_handler():
+            raise TimeoutException("Timed out!")
+        
+        timer = threading.Timer(seconds, timeout_handler)
+        timer.start()
+        try:
+            yield
+        finally:
+            timer.cancel()
+else:
+    import signal
+    
+    class TimeoutException(Exception): pass
+    
+    @contextmanager
+    def time_limit(seconds):
+        def signal_handler(signum, frame):
+            raise TimeoutException("Timed out!")
+        signal.signal(signal.SIGALRM, signal_handler)
+        signal.alarm(seconds)
+        try:
+            yield
+        finally:
+            signal.alarm(0)
+
+dataset = "./datasets/human_eval.json"
+results = []
+timeout_seconds = 5
+
+# Configuration: 5 different parameter sets for the experiment
+total_tasks = 10  # Start with 10 tasks for testing, change to 164 for full run
+parameter_configs = [
+    {
+        "name": "Conservative",
+        "params": {
+            "temperature": 0.1,
+            "top_p": 0.8,
+            "top_k": 20,
+            "num_predict": 256
+        }
+    },
+    {
+        "name": "Balanced",
+        "params": {
+            "temperature": 0.7,
+            "top_p": 0.9,
+            "top_k": 40,
+            "num_predict": 512
+        }
+    },
+    {
+        "name": "Creative",
+        "params": {
+            "temperature": 1.2,
+            "top_p": 0.95,
+            "top_k": 80,
+            "num_predict": 512
+        }
+    },
+    {
+        "name": "High_Randomness",
+        "params": {
+            "temperature": 1.5,
+            "top_p": 1.0,
+            "top_k": 100,
+            "num_predict": 768
+        }
+    },
+    {
+        "name": "Focused",
+        "params": {
+            "temperature": 0.3,
+            "top_p": 0.7,
+            "top_k": 10,
+            "num_predict": 300
+        }
+    }
+]
+
+print(f"Starting Experiment 3: Parameter Variation Evaluation")
+print(f"Total tasks: {total_tasks}")
+print(f"Parameter configurations: {len(parameter_configs)}")
+print("Configurations:")
+for i, config in enumerate(parameter_configs, 1):
+    print(f"  {i}. {config['name']}: {config['params']}")
+print()
+
+for i in range(total_tasks):
+    task_id = f"HumanEval_{i}"
+    print(f"\nProcessing {task_id}:")
+
+    process_task(dataset, task_id, "./current_task")
+
+    try:
+        task = get_task(dataset, task_id)
+        entry_point = get_entry_point(dataset, task_id)
+    except Exception:
+        print(f"❌ Error while loading task or entry point for {task_id}:")
+        print(traceback.format_exc())
+        sys.exit(1)
+
+    task_results = {
+        "task_id": task_id,
+        "responses": []
+    }
+
+    for j, config in enumerate(parameter_configs):
+        config_name = config['name']
+        params = config['params']
+        
+        print(f"  Generating solution with {config_name} config ({j+1}/{len(parameter_configs)}) for {task_id}...")
+        
+        # Load generated test
+        check = load_module("test", "./current_task/test.py").check
+
+        try:
+            code = generate_code(task, "llama3.2", model_params=params)
+            save_solution(code, entry_point, "./current_task")
+        
+            # Load generated code
+            generated_solution = load_module("generated_solution", "./current_task/generated_solution.py").generated_solution
+        
+            try:
+                with time_limit(timeout_seconds):
+                    check(generated_solution)
+                test_result = "passed"
+                traceback_string = ""
+                print(f"    ✅ Passed test case with {config_name} config.")
+            except TimeoutException:
+                test_result = "timeout"
+                traceback_string = f"Function timed out after {timeout_seconds} seconds"
+                print(f"    ⏱️ Timeout after {timeout_seconds} seconds with {config_name} config")
+            except AssertionError:
+                # grab the full traceback as a list of lines
+                tb_lines = traceback.format_exc().splitlines()
+                # find the line that starts with 'assert'
+                traceback_string = next(
+                    (line.strip() for line in tb_lines if line.strip().startswith("assert ")),
+                    None
+                )
+                test_result = "failed"
+                print(f"    ❌ Assertion failed with {config_name} config: {traceback_string}")
+            except Exception:
+                # any other exception
+                print(f"    ❌ Error while running test with {config_name} config:")
+                traceback_string = traceback.format_exc()
+                test_result = "failed"
+                print(f"    ❌ Error: {traceback_string.splitlines()[-1]}")
+        except Exception:
+            test_result = "failed"
+            traceback_string = traceback.format_exc()
+            print(f"❌ Error importing generated code with {config_name} config: {traceback_string.splitlines()[-1]}")
+
+        task_results["responses"].append({
+            "config_name": config_name,
+            "model_params": params,
+            "code": code,
+            "traceback": traceback_string,
+            "test_result": test_result
+        })
+
+    results.append(task_results)
+
+# Save results
+timestamp = datetime.now().strftime("%d%m%y-%H%M%S")
+filename = f"./datasets/exp_3_llama3_params_{timestamp}.json"
+
+with open(filename, "w") as f:
+    json.dump(results, f, indent=2)
+
+print(f"\n📊 Results saved to {filename}")
+
+# Generate analysis report comparing parameter configurations
+print("🔍 Generating analysis report...")
+
+try:
+    analysis_result = generate_analysis_report(filename)
+    
+    analysis_filename = f"./reports/analysis_exp_3_params_{timestamp}.json"
+    
+    with open(analysis_filename, "w") as f:
+        json.dump(analysis_result, f, indent=2)
+    
+    print(f"📈 Analysis report saved to {analysis_filename}")
+    
+    # Print summary statistics
+    total_responses = len(results) * len(parameter_configs)
+    passed_count = sum(1 for task in results for response in task["responses"] if response["test_result"] == "passed")
+    failed_count = sum(1 for task in results for response in task["responses"] if response["test_result"] == "failed")
+    timeout_count = sum(1 for task in results for response in task["responses"] if response["test_result"] == "timeout")
+    
+    print(f"\n📊 Experiment 3 Summary:")
+    print(f"Total responses: {total_responses}")
+    print(f"Passed: {passed_count} ({passed_count/total_responses*100:.1f}%)")
+    print(f"Failed: {failed_count} ({failed_count/total_responses*100:.1f}%)")
+    print(f"Timeout: {timeout_count} ({timeout_count/total_responses*100:.1f}%)")
+    
+    # Per-configuration statistics
+    print(f"\n📊 Per-Configuration Results:")
+    for config in parameter_configs:
+        config_name = config['name']
+        config_responses = [r for task in results for r in task["responses"] if r["config_name"] == config_name]
+        config_passed = sum(1 for r in config_responses if r["test_result"] == "passed")
+        config_total = len(config_responses)
+        print(f"  {config_name}: {config_passed}/{config_total} ({config_passed/config_total*100:.1f}% passed)")
+
+except Exception as e:
+    print(f"❌ Error generating analysis: {e}")
+    print(traceback.format_exc())
+
+print("\n✅ Experiment 3 completed!")

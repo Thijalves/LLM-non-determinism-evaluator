@@ -36,11 +36,18 @@ LLM-non-determinism-evaluator/
 
 ## Experimentos 
 
-1. Coletar 5 soluções por task geradas pelo llama3.2 e comparar sintaxe (conteudo da string), semântica (resultado do teste) e estrutura (AST)
+1. **Experimento 1**: Coletar 5 soluções por task geradas pelo llama3.2 e comparar sintaxe (conteudo da string), semântica (resultado do teste) e estrutura (AST)
+2. **Experimento 2**: Iteração com feedback até obter solução correta (máximo 5 tentativas)
+3. **Experimento 3**: Variação de parâmetros do modelo - 5 configurações diferentes por task:
+   - Conservative (temp=0.1, top_p=0.8, top_k=20)
+   - Balanced (temp=0.7, top_p=0.9, top_k=40) 
+   - Creative (temp=1.2, top_p=0.95, top_k=80)
+   - High_Randomness (temp=1.5, top_p=1.0, top_k=100)
+   - Focused (temp=0.3, top_p=0.7, top_k=10)
 
 ## Como Usar
 
-### 1. Executar Experimento
+### 1. Executar Experimento 1
 ```bash
 python3 experiment_1.py
 ```
@@ -48,6 +55,23 @@ python3 experiment_1.py
 - Executa testes automáticos
 - Salva resultados em `datasets/exp_1_*.json`
 - Gera análise automática em `reports/analysis/analysis_report_*.json`
+
+### 2. Executar Experimento 2
+```bash
+python3 experiment_2.py
+```
+- Itera até obter solução correta (máx 5 tentativas)
+- Usa feedback dos erros para melhorar próxima tentativa
+- Salva resultados em `datasets/exp_2_*.json`
+
+### 3. Executar Experimento 3
+```bash
+python3 experiment_3.py
+```
+- Testa 5 configurações diferentes de parâmetros por task
+- Avalia impacto da temperature, top_p, top_k e num_predict
+- Salva resultados em `datasets/exp_3_*.json`
+- Gera análise comparativa por configuração
 
 ### 2. Analisar Resultados
 ```bash
